@@ -12,3 +12,8 @@ PROJECT = {
     ],
     "chart": "版本覆盖",
 }
+MIGRATION_PROJECT = {
+    "name": "客户编号切换迁移台",
+    "actor": "数仓维度维护员",
+    "chart": "新客户看账",
+}

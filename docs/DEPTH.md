@@ -13,6 +13,11 @@
 | M5 运行对账 | 对照输入、采信和隔离行 | `POST /api/stages/balance` | `app/modules/reconcile.py` | `tests/test_reconcile.py` |
 | M6 批次复核 | 执行批次并签发或暂缓 | `POST /api/runs、PATCH /api/runs/<id>` | `app/review/service.py` | `tests/test_review.py` |
 | M7 证据交付 | 下载复核清单 | `GET /api/runs/<id>/evidence` | `app/evidence/render.py` | `tests/test_evidence.py` |
+| MG1 迁移采信 | 映射与交易去重、重放/冲突隔离 | `POST /api/migrations/preview` | `app/migration/service.py` | `tests/test_migration_idempotency.py` |
+| MG2 身份归属 | 旧新编号解析、双命中待核 | 同上 | `app/migration/migrate.py` | `tests/test_migration_classify.py` |
+| MG3 迁移对账 | 数量/金额四守恒与签发闸门 | 同上 | `app/migration/migrate.py` | `tests/test_migration_signoff.py` |
+| MG4 迁移复核 | 内容寻址幂等批次、乐观锁签发 | `POST /api/migrations/runs、PATCH /api/migrations/runs/<id>` | `app/migration/review.py`、`app/migration/store.py` | `tests/test_migration_http.py` |
+| MG5 迁移证据 | 台账、归属与待核依据导出 | `GET /api/migrations/runs/<id>/evidence` | `app/migration/evidence.py` | `tests/test_migration_http.py` |
 
 ## 输入陷阱
 

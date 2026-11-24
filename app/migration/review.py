@@ -1,0 +1,57 @@
+from datetime import datetime, timezone
+from hashlib import sha256
+from time import monotonic
+
+from app.business import DomainIssue
+from app.config import MIGRATION_RULE_VERSION
+from app.migration.migrate import run
+
+
+def now():
+    return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
+
+
+def execute(store, data):
+    """执行迁移批次。run_id 由规则版本与来源指纹决定，天然幂等。"""
+    start = monotonic()
+    fingerprint = sha256(data).hexdigest()
+    run_id = sha256(f"{MIGRATION_RULE_VERSION}:migration:{fingerprint}".encode()).hexdigest()
+    try:
+        # 命中既有批次直接返回，重跑不重复入库、不重算归属。
+        return store.load(run_id)
+    except DomainIssue as error:
+        if error.code != "MIGRATION_NOT_FOUND":
+            raise
+    report = run(data)
+    report["manifest"] = dict(
+        sha256=fingerprint,
+        version=MIGRATION_RULE_VERSION,
+        created=now(),
+        duration_ms=round((monotonic() - start) * 1000, 3),
+        bytes=len(data),
+        run_id=run_id,
+    )
+    return store.register(run_id, report)
+
+
+def review(store, run_id, values):
+    if not isinstance(values, dict):
+        raise DomainIssue("REVIEW_FIELDS")
+    revision, status, note = (values.get(key) for key in ("revision", "status", "note"))
+    if (
+        type(revision) is not int
+        or revision < 0
+        or status not in ("APPROVED", "HELD")
+        or not isinstance(note, str)
+        or not (3 <= len(note.strip()) <= 200)
+    ):
+        raise DomainIssue("REVIEW_FIELDS")
+    current = store.load(run_id)
+    if revision != current["revision"]:
+        raise DomainIssue("STALE_REVIEW")
+    if current["status"] == "APPROVED":
+        raise DomainIssue("RUN_FINALIZED")
+    if status == "APPROVED" and not current["report"]["balance"]["signable"]:
+        # 拒绝签发：不调用任何写库方法，旧版归属与待核依据原样保留。
+        raise DomainIssue("MIGRATION_NOT_BALANCED")
+    return store.revise(run_id, revision, status, note.strip(), now())

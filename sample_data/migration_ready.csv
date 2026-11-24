@@ -1,0 +1,9 @@
+﻿record,kind,customer,mapped_customer,cents,note
+M01,mapping,C-OLD-1,C-NEW-1,0,客户一编号切换
+M02,mapping,C-OLD-2,C-NEW-2,0,客户二编号切换
+M101,transaction,C-OLD-1,,100,旧编号签约交易
+M102,transaction,C-NEW-1,,40,新编号直接入账
+M103,transaction,C-OLD-1,,60,切换期旧编号命中
+M103,transaction,C-NEW-1,,60,切换期新编号命中
+M201,transaction,C-OLD-2,,200,客户二旧账迁移
+M202,transaction,C-NEW-2,,25,客户二新账

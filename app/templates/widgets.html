@@ -1,5 +1,9 @@
 {% macro identity(p) %}
-<header class="mast"><p class="role">{{ p.actor }}</p><h1>{{ p.name }}</h1></header>
+<header class="mast"><p class="role">{{ p.actor }}</p><h1>{{ p.name }}</h1>
+  <nav class="switch" aria-label="工作台切换">
+    <a href="/" aria-current="page">维表回溯台</a><a href="/migration">客户迁移台</a>
+  </nav>
+</header>
 {% endmacro %}
 {% macro navigation(p) %}
 <nav class="stages" aria-label="处理阶段">

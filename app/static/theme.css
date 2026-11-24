@@ -51,3 +51,11 @@ body.graph {margin:0;background:var(--bg);color:var(--ink);font:var(--size)/1.55
 .segment-lane {display:grid; grid-template-columns:5em 1fr;align-items:center}
 .segment-lane .mark-piece {width:max(min(5em,100%),var(--part));padding:9px;color:var(--bg);border-radius:2px 24px 24px 2px}
 .segment-gap {border-left:4px solid var(--alert);padding:8px;margin-top:8px}
+
+/* 客户迁移台 */
+.graph .switch {display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+.graph .switch a {padding:4px 10px;border:1px solid var(--line);border-radius:var(--radius);text-decoration:none;font-size:.9em}
+.graph .switch a[aria-current="page"] {background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.graph .subhead {font-size:14px;margin:16px 0 6px;color:var(--sub)}
+.graph #m-sign-flag {font-variant-numeric:tabular-nums}
+.graph #m-sign-flag:empty {display:none}

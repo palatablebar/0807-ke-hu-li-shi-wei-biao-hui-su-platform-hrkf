@@ -10,6 +10,8 @@ from app.review.store import Store
 
 ROOT = Path(__file__).resolve().parents[1]
 
+pytest_plugins = ("migration_helpers",)
+
 
 def csv_data(records):
     stream = io.StringIO(newline="")
